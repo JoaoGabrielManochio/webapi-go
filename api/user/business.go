@@ -14,7 +14,10 @@ import (
 // IUserBusiness : interface of user business
 type IUserBusiness interface {
 	PostUser(user models.User) (int, *models.User, error)
-	// GetUsers(userId string) (int, *model.DocumentStatusInfo, error)
+	UpdateUser(user models.User) (int, *models.User, error)
+	GetUser(id int64) (int, *[]models.User, error)
+	GetUsers() (int, *[]models.User, error)
+	DeleteUser(id int64) (int, error)
 }
 
 // UserBusiness : struct of user business
@@ -70,20 +73,94 @@ func (a *UserBusiness) PostUser(user models.User) (int, *models.User, error) {
 	return http.StatusAccepted, newUser, nil
 }
 
-/*
+// GetUser : get user from database by ID
+func (a *UserBusiness) GetUser(id int64) (int, *[]models.User, error) {
+	user, err := a.UserRepository.FindById(id)
 
-// GetDocumentStatus : call bankly service and get document status with document type
-func (a *UserBusiness) GetDocumentStatus(userId string) (int, *model.DocumentStatusInfo, error) {
-	documents, err := a.UserRepository.Get(&model.UserDocument{
-		UserId:   userId,
-		IsActive: true,
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusBadRequest, nil, errors.New("user not found")
+	}
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, user, nil
+}
+
+// GetUsers : get all users from database
+func (a *UserBusiness) GetUsers() (int, *[]models.User, error) {
+	user, err := a.UserRepository.FindAll()
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusBadRequest, nil, errors.New("users not found")
+	}
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, user, nil
+}
+
+// UpdateUser : update user infos
+func (a *UserBusiness) UpdateUser(user models.User) (int, *models.User, error) {
+
+	_, err := a.UserRepository.GetUserByEmailAndId(user.Email, user.Id)
+
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusBadRequest, nil, errors.New("email already used")
+	}
+
+	_, err = a.UserRepository.GetUserByDocumentAndId(user.CPFCNPJ, user.Id)
+
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusBadRequest, nil, errors.New("CPF/CNPJ already used")
+	}
+
+	if !config.IsCPF(user.CPFCNPJ) && !config.IsCNPJ(user.CPFCNPJ) {
+		return http.StatusBadRequest, nil, errors.New("CPF/CNPJ is not valid")
+	}
+
+	newUser, err := a.UserRepository.Update(&models.User{
+		Id:        user.Id,
+		Name:      user.Name,
+		Email:     user.Email,
+		CPFCNPJ:   user.CPFCNPJ,
+		Password:  user.Password,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	})
 
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
 	}
 
-	documentsStatus := getDocumentsStatus(documents)
-	return http.StatusOK, documentsStatus, nil
+	return http.StatusAccepted, newUser, nil
 }
-*/
+
+// DeleteUser : delete user from database by ID
+func (a *UserBusiness) DeleteUser(id int64) (int, error) {
+
+	_, err := a.UserRepository.FindById(id)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusBadRequest, errors.New("user not found")
+	}
+
+	err = a.UserRepository.Delete(&models.User{}, id)
+
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}

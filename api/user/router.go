@@ -11,13 +11,8 @@ func Router(g *gin.RouterGroup) {
 	controller := NewUserController(business)
 
 	g.POST("", controller.CreateUser)
-
-	// user := main.Group("users")
-	// {
-	// 	user.GET("/:id", controllers.ShowUser)
-	// 	user.GET("/", controllers.ShowUsers)
-	// 	user.POST("/", controllers.CreateUser)
-	// 	user.PUT("/", controllers.UpdateUser)
-	// 	user.DELETE("/:id", controllers.DeleteUser)
-	// }
+	g.GET("/:id", controller.GetUser)
+	g.GET("", controller.GetUsers)
+	g.PUT("/", controller.UpdateUser)
+	g.DELETE("/:id", controller.DeleteUser)
 }
