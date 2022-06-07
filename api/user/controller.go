@@ -7,6 +7,7 @@ import (
 	"github.com/JoaoGabrielManochio/webapi-go/database"
 	"github.com/JoaoGabrielManochio/webapi-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 // IUserController : interface of user business
@@ -58,78 +59,27 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 	user := &models.User{}
 	if err := c.ShouldBindJSON(user); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{"error": "123", "code": "codigo do erro"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{"error": "check the types of the fields informed in the POST", "code": strconv.Itoa(http.StatusBadRequest)})
 		return
 	}
 
 	validate := validator.New()
-	if err := validate.Struct(MyStruct); err != nil {
+	if err := validate.Struct(user); err != nil {
 		validationErrors := err.(validator.ValidationErrors)
-		c.AbortWithStatusJSON(statusCode, map[string]string{"error": validationErrors, "code": "codigo do erro"})
+
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{"error": validationErrors.Error(), "code": strconv.Itoa(http.StatusBadRequest)})
 		return
+	}
 
-	u.userBusiness.PostUser(*user)
+	statusCode, user, err := u.userBusiness.PostUser(*user)
 
-	// exemplo
-	// if err := credential.IsValid(); err != nil {
-	// 	c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{"error": "123", "code": "codigo do erro"})
-	// 	return
-	// }
+	if err != nil {
+		c.AbortWithStatusJSON(statusCode, map[string]string{"error": err.Error(), "code": strconv.Itoa(statusCode)})
+		return
+	}
 
-	// access, statusCode, err := u.userBusiness.Login(credential)
-	// if err != nil {
-	// 	c.AbortWithStatusJSON(statusCode, map[string]string{"error": "123", "code": "codigo do erro"})
-	// 	return
-	// }
-
-	// c.JSON(http.StatusOK, access)
-	// exemplo
-
-	// db := database.GetDatabase()
-
-	// var user models.User
-
-	// err := c.ShouldBindJSON(&user)
-
-	// if err != nil {
-	// 	c.JSON(400, gin.H{
-	// 		"error": "cannot bind JSON: " + err.Error(),
-	// 	})
-
-	// 	return
-	// }
-
-	// err = db.Create(&user).Error
-
-	// if err != nil {
-	// 	c.JSON(400, gin.H{
-	// 		"error": "cannot create user : " + err.Error(),
-	// 	})
-
-	// 	return
-	// }
-
-	c.JSON(201, user)
+	c.JSON(http.StatusCreated, user)
 }
-
-// func (c *Credential) IsValid() error {
-// 	if c.DeviceInfo.DeviceCode == "" {
-// 		return errors.New("device code é obrigatório")
-// 	}
-// 	if c.DeviceInfo.Brand == "" {
-// 		return errors.New("brand é obrigatório")
-// 	}
-// 	if c.DeviceInfo.DeviceName == "" {
-// 		return errors.New("device name é obrigatório")
-// 	}
-// 	if c.DeviceInfo.SystemName == "" {
-// 		return errors.New("system name é obrigatório")
-// 	}
-// 	if c.DeviceInfo.SystemVersion == "" {
-// 		return errors.New("system version é obrigatório")
-// 	}
-// 	return nil
-// }
 
 func ShowUsers(c *gin.Context) {
 

@@ -3,9 +3,9 @@ package user
 import (
 	"errors"
 	"net/http"
-	"strings"
 	"time"
 
+	"github.com/JoaoGabrielManochio/webapi-go/config"
 	"github.com/JoaoGabrielManochio/webapi-go/models"
 	"github.com/JoaoGabrielManochio/webapi-go/repository/user"
 	"gorm.io/gorm"
@@ -30,53 +30,44 @@ func NewUserBusiness(UserRepository user.IUserRepository) IUserBusiness {
 // PostUser : post user
 func (a *UserBusiness) PostUser(user models.User) (int, *models.User, error) {
 
-	document, err := a.UserRepository.GetDocument(&model.UserDocument{
-		UserId:             user.UserId,
-		UserDocumentTypeId: *documentTypeId,
-		UserDocumentSideId: documentSideId,
-		IsActive:           true,
-	})
+	_, err := a.UserRepository.GetUserByEmail(user.Email)
+
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return http.StatusInternalServerError, nil, err
 	}
 
-	if document != nil && document.Id != 0 {
-		documentStatus := strings.ToLower(document.UserDocumentStatus.Name)
-		if documentStatus == Constants.Q2Bank.KYCStatus.InProgress || documentStatus == Constants.Q2Bank.KYCStatus.Approved {
-			return http.StatusBadRequest, nil, errors.New("tipo do documento já está vinculado")
-		}
-
-		if err := a.UserRepository.UpdateStatus(document.Id, document.UserDocumentStatusId, false); err != nil {
-			return http.StatusInternalServerError, nil, err
-		}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusBadRequest, nil, errors.New("email already used")
 	}
 
-	merchantDetail, statusCode, err := a.ChrisService.GetMerchant(user.MerchantId)
-	if err != nil {
-		return statusCode, nil, err
+	_, err = a.UserRepository.GetUserByDocument(user.CPFCNPJ)
+
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusInternalServerError, nil, err
 	}
 
-	documentNumber := merchantDetail.LegalRepresentative.DocumentNumber
-	statusCode, banklyDocument, err := a.BanklyDocumentService.Post(documentNumber, documentType, documentSide, fileName, contentType, file)
-	if err != nil {
-		return statusCode, nil, err
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return http.StatusBadRequest, nil, errors.New("CPF/CNPJ already used")
 	}
 
-	err = a.UserRepository.Create(&model.UserDocument{
-		UserId:               user.UserId,
-		UserDocumentTypeId:   *documentTypeId,
-		UserDocumentSideId:   documentSideId,
-		UserDocumentStatusId: Constants.Q2Bank.UserDocument.Status.InProgress,
-		Token:                banklyDocument.Token,
-		IsActive:             true,
-		CreatedAt:            time.Now(),
+	if !config.IsCPF(user.CPFCNPJ) && !config.IsCNPJ(user.CPFCNPJ) {
+		return http.StatusBadRequest, nil, errors.New("CPF/CNPJ is not valid")
+	}
+
+	newUser, err := a.UserRepository.Create(&models.User{
+		Name:      user.Name,
+		Email:     user.Email,
+		CPFCNPJ:   user.CPFCNPJ,
+		Password:  user.Password,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	})
 
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
 	}
 
-	return http.StatusAccepted, &banklyDocument, nil
+	return http.StatusAccepted, newUser, nil
 }
 
 /*
