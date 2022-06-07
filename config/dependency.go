@@ -1,4 +1,4 @@
-package dependency
+package config
 
 import (
 	"github.com/JoaoGabrielManochio/webapi-go/database"
@@ -13,7 +13,7 @@ var (
 
 func Load() error {
 	// DB
-	apiDb, err := database.StartDB("localhost", 3308, "root", "api", "root")
+	apiDb, err := database.StartDB(3308, "localhost", "root", "api", "root", "America%2FSao_Paulo")
 
 	if err != nil {
 		return err

@@ -12,8 +12,8 @@ import (
 var db *gorm.DB
 
 // StartDB : open MySQL database connection
-func StartDB(host string, port int64, user string, dbName string, password string) (*gorm.DB, error) {
-	sn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, password, host, port, dbName)
+func StartDB(port int64, host, user, dbName, password, timeZone string) (*gorm.DB, error) {
+	sn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=%s", user, password, host, port, dbName, timeZone)
 
 	db, err := gorm.Open(mysql.Open(sn), &gorm.Config{})
 	if err != nil {
