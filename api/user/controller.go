@@ -1,10 +1,10 @@
 package user
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
-	"github.com/JoaoGabrielManochio/webapi-go/database"
 	"github.com/JoaoGabrielManochio/webapi-go/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -68,6 +68,13 @@ func (u *UserController) CreateUser(c *gin.Context) {
 		validationErrors := err.(validator.ValidationErrors)
 
 		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{"error": validationErrors.Error(), "code": strconv.Itoa(http.StatusBadRequest)})
+		return
+	}
+
+	err := isValid(user)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{"error": err.Error(), "code": strconv.Itoa(http.StatusBadRequest)})
 		return
 	}
 
@@ -150,31 +157,20 @@ func (u *UserController) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, "user deleted")
 }
 
-func DeleteUser(c *gin.Context) {
+//isValid : valid required fields
+func isValid(u *models.User) error {
 
-	id := c.Param("id")
-
-	newid, err := strconv.Atoi(id)
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "ID has to be integer",
-		})
-
-		return
+	if u.Name == "" {
+		return errors.New("name canot be empty")
 	}
 
-	db := database.GetDatabase()
-
-	err = db.Delete(&models.User{}, newid).Error
-
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "cannot delete user: " + err.Error(),
-		})
-
-		return
+	if u.Email == "" {
+		return errors.New("email canot be empty")
 	}
 
-	c.Status(204)
+	if u.CPFCNPJ == "" {
+		return errors.New("document canot be empty")
+	}
+
+	return nil
 }
