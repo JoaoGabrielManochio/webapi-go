@@ -3,12 +3,14 @@ package config
 import (
 	"github.com/JoaoGabrielManochio/webapi-go/database"
 	"github.com/JoaoGabrielManochio/webapi-go/repository/user"
+	"github.com/JoaoGabrielManochio/webapi-go/repository/wallet"
 	"gorm.io/gorm"
 )
 
 var (
-	apiDb          *gorm.DB
-	UserRepository user.IUserRepository
+	apiDb            *gorm.DB
+	UserRepository   user.IUserRepository
+	WalletRepository wallet.IWalletRepository
 )
 
 func Load() error {
@@ -22,6 +24,7 @@ func Load() error {
 	database.Load(apiDb)
 
 	UserRepository = user.NewUser(apiDb)
+	WalletRepository = wallet.NewWallet(apiDb)
 
 	return err
 }
