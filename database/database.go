@@ -27,10 +27,6 @@ func StartDB(port int64, host, user, dbName, password, timeZone string) (*gorm.D
 	return db, nil
 }
 
-func GetDatabase() *gorm.DB {
-	return db
-}
-
 func Load(db *gorm.DB) {
 	migrations.RunMigrations(db)
 }
