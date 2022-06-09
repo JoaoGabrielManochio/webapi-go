@@ -25,7 +25,6 @@ func NewUser(db *gorm.DB) IUserRepository {
 	return &UserRepository{db}
 }
 
-// -> verificar tirar a senha no retorno da api
 // FindById : get user by ID
 func (b *UserRepository) FindById(id int64) (*[]models.User, error) {
 	user := &[]models.User{}

@@ -27,7 +27,7 @@ func NewServer() Server {
 }
 
 func (s *Server) Run() *gin.Engine {
-	gin.SetMode("debug")
+	// gin.SetMode("debug")
 
 	engine := gin.New()
 
@@ -36,7 +36,6 @@ func (s *Server) Run() *gin.Engine {
 	log.Print("server is running at port:", s.port)
 
 	log.Fatal(engine.Run(":" + s.port))
-	// r.Use(gin.CustomRecovery(recovery.PanicFilter))
 
 	return engine
 }

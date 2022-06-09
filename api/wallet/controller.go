@@ -29,6 +29,13 @@ func NewWalletController(walletBusiness IWalletBusiness) IWalletController {
 	return &WalletController{walletBusiness}
 }
 
+// GetWallet godoc
+// @Summary Get a wallet
+// @id get-string
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} Wallet
+// @Router /wallet/{{id}} [GET]
 func (u *WalletController) GetWallet(c *gin.Context) {
 
 	id := c.Param("id")
@@ -55,6 +62,17 @@ func (u *WalletController) GetWallet(c *gin.Context) {
 	c.JSON(http.StatusOK, wallet)
 }
 
+// CreateWallet godoc
+// @Summary Create a new wallet
+// @name get-string
+// @user_id get-int
+// @value get-string
+// @Produce  json
+// @Param name path int true "name"
+// @Param user_id path int true "user_id"
+// @Param value path int true "value"
+// @Success 200 {object} Wallet
+// @Router /user [POST]
 func (u *WalletController) CreateWallet(c *gin.Context) {
 
 	wallet := &models.Wallet{}
@@ -88,9 +106,13 @@ func (u *WalletController) CreateWallet(c *gin.Context) {
 	c.JSON(http.StatusCreated, wallet)
 }
 
+// GetWallets godoc
+// @Summary Get all wallets
+// @Produce  json
+// @Success 200 {object} Wallet
+// @Router /wallet [GET]
 func (u *WalletController) GetWallets(c *gin.Context) {
 
-	// -> verificar adicionar validação de paginação
 	statusCode, wallet, err := u.walletBusiness.GetWallets()
 
 	if err != nil {
@@ -101,6 +123,19 @@ func (u *WalletController) GetWallets(c *gin.Context) {
 	c.JSON(http.StatusOK, wallet)
 }
 
+// UpdateWallet godoc
+// @Summary Update a wallet
+// @id get-int
+// @name get-string
+// @user_id get-int
+// @value get-string
+// @Produce  json
+// @Param id path int true "id"
+// @Param name path int true "name"
+// @Param user_id path int true "user_id"
+// @Param value path int true "value"
+// @Success 200 {object} Wallet
+// @Router /wallet [PUT]
 func (u *WalletController) UpdateWallet(c *gin.Context) {
 
 	wallet := &models.Wallet{}
@@ -138,6 +173,13 @@ func (u *WalletController) UpdateWallet(c *gin.Context) {
 	c.JSON(http.StatusCreated, wallet)
 }
 
+// DeleteWallet godoc
+// @Summary Delete a wallet
+// @id get-int
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} Wallet
+// @Router /wallet [DELETE]
 func (u *WalletController) DeleteWallet(c *gin.Context) {
 
 	id := c.Param("id")

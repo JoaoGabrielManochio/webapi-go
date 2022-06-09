@@ -27,6 +27,13 @@ func NewTransactionController(transactionBusiness ITransactionBusiness) ITransac
 	return &TransactionController{transactionBusiness}
 }
 
+// GetTransaction godoc
+// @Summary Show a transaction
+// @ID get-int
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} Transaction
+// @Router /transaction/{{id}} [GET]
 func (u *TransactionController) GetTransaction(c *gin.Context) {
 
 	id := c.Param("id")
@@ -53,9 +60,13 @@ func (u *TransactionController) GetTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, transaction)
 }
 
+// GetTransactions godoc
+// @Summary Show all transaction
+// @Produce  json
+// @Success 200 {object} Transaction
+// @Router /transaction [GET]
 func (u *TransactionController) GetTransactions(c *gin.Context) {
 
-	// -> verificar adicionar validação de paginação
 	statusCode, transaction, err := u.transactionBusiness.GetTransactions()
 
 	if err != nil {
@@ -66,6 +77,17 @@ func (u *TransactionController) GetTransactions(c *gin.Context) {
 	c.JSON(http.StatusOK, transaction)
 }
 
+// CreateTransaction godoc
+// @Summary Create a new transaction
+// @value get-float
+// @payer_id get-int
+// @payer_receive_id get-int
+// @Produce  json
+// @Param value path int true "value"
+// @Param payer_id path int true "payer_id"
+// @Param payer_receive_id path int true "payer_receive_id"
+// @Success 200 {object} Transaction
+// @Router /transaction [POST]
 func (u *TransactionController) CreateTransaction(c *gin.Context) {
 
 	transaction := &models.Transaction{}

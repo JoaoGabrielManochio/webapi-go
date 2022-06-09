@@ -29,6 +29,13 @@ func NewUserController(userBusiness IUserBusiness) IUserController {
 	return &UserController{userBusiness}
 }
 
+// GetUser godoc
+// @Summary Get a users
+// @id get-int
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} User
+// @Router /user/{{id}} [GET]
 func (u *UserController) GetUser(c *gin.Context) {
 
 	id := c.Param("id")
@@ -55,6 +62,19 @@ func (u *UserController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// CreateUser godoc
+// @Summary Create a new user
+// @name get-string
+// @password get-string
+// @email get-string
+// @cpf_cnpj get-string
+// @Produce  json
+// @Param name path int true "name"
+// @Param password path int true "password"
+// @Param email path int true "email"
+// @Param cpf_cnpj path int true "cpf_cnpj"
+// @Success 200 {object} User
+// @Router /user [POST]
 func (u *UserController) CreateUser(c *gin.Context) {
 
 	user := &models.User{}
@@ -88,9 +108,13 @@ func (u *UserController) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
+// GetUsers godoc
+// @Summary Get all users
+// @Produce  json
+// @Success 200 {object} User
+// @Router /user [GET]
 func (u *UserController) GetUsers(c *gin.Context) {
 
-	// -> verificar adicionar validação de paginação
 	statusCode, user, err := u.userBusiness.GetUsers()
 
 	if err != nil {
@@ -101,6 +125,21 @@ func (u *UserController) GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// UpdateUser godoc
+// @Summary Update user
+// @ID get-int
+// @name get-string
+// @password get-string base64
+// @email get-string
+// @cpf_cnpj get-string
+// @Produce  json
+// @Param id path int true "ID"
+// @Param name path int true "name"
+// @Param password path int true "password"
+// @Param email path int true "email"
+// @Param cpf_cnpj path int true "cpf_cnpj"
+// @Success 200 {object} User
+// @Router /user [PUT]
 func (u *UserController) UpdateUser(c *gin.Context) {
 
 	user := &models.User{}
@@ -131,6 +170,13 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
+// DeleteUser godoc
+// @Summary Delete user
+// @ID get-int
+// @Produce  json
+// @Param id path int true "ID"
+// @Success 200 {object} User
+// @Router /user [DELETE]
 func (u *UserController) DeleteUser(c *gin.Context) {
 
 	id := c.Param("id")
