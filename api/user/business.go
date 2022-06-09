@@ -1,6 +1,8 @@
 package user
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"net/http"
 	"time"
@@ -57,11 +59,13 @@ func (a *UserBusiness) PostUser(user models.User) (int, *models.User, error) {
 		return http.StatusBadRequest, nil, errors.New("CPF/CNPJ is not valid")
 	}
 
+	password := createHash(user.Password)
+
 	newUser, err := a.UserRepository.Create(&models.User{
 		Name:      user.Name,
 		Email:     user.Email,
 		CPFCNPJ:   user.CPFCNPJ,
-		Password:  user.Password,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
@@ -163,4 +167,12 @@ func (a *UserBusiness) DeleteUser(id int64) (int, error) {
 	}
 
 	return http.StatusOK, nil
+}
+
+func createHash(key string) string {
+	hasher := md5.New()
+
+	hasher.Write([]byte(key))
+
+	return hex.EncodeToString(hasher.Sum(nil))
 }
