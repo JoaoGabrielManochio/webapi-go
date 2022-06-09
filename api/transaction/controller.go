@@ -29,10 +29,10 @@ func NewTransactionController(transactionBusiness ITransactionBusiness) ITransac
 
 // GetTransaction godoc
 // @Summary Show a transaction
-// @ID get-int
+// @ID getTransaction
 // @Produce  json
 // @Param id path int true "id"
-// @Success 200 {object} Transaction
+// @Success 200 {object} models.Transaction
 // @Router /transaction/{{id}} [GET]
 func (u *TransactionController) GetTransaction(c *gin.Context) {
 
@@ -62,8 +62,9 @@ func (u *TransactionController) GetTransaction(c *gin.Context) {
 
 // GetTransactions godoc
 // @Summary Show all transaction
+// @ID getTransactions
 // @Produce  json
-// @Success 200 {object} Transaction
+// @Success 200 {object} models.Transaction
 // @Router /transaction [GET]
 func (u *TransactionController) GetTransactions(c *gin.Context) {
 
@@ -79,14 +80,12 @@ func (u *TransactionController) GetTransactions(c *gin.Context) {
 
 // CreateTransaction godoc
 // @Summary Create a new transaction
-// @value get-float
-// @payer_id get-int
-// @payer_receive_id get-int
+// @ID createTransaction
 // @Produce  json
-// @Param value path int true "value"
+// @Param value path number true "value"
 // @Param payer_id path int true "payer_id"
 // @Param payer_receive_id path int true "payer_receive_id"
-// @Success 200 {object} Transaction
+// @Success 200 {object} models.Transaction
 // @Router /transaction [POST]
 func (u *TransactionController) CreateTransaction(c *gin.Context) {
 

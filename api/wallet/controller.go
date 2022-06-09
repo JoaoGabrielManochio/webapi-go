@@ -31,10 +31,10 @@ func NewWalletController(walletBusiness IWalletBusiness) IWalletController {
 
 // GetWallet godoc
 // @Summary Get a wallet
-// @id get-string
+// @id getWallet
 // @Produce  json
 // @Param id path int true "id"
-// @Success 200 {object} Wallet
+// @Success 200 {object} models.Wallet
 // @Router /wallet/{{id}} [GET]
 func (u *WalletController) GetWallet(c *gin.Context) {
 
@@ -64,15 +64,13 @@ func (u *WalletController) GetWallet(c *gin.Context) {
 
 // CreateWallet godoc
 // @Summary Create a new wallet
-// @name get-string
-// @user_id get-int
-// @value get-string
+// @id createWallet
 // @Produce  json
-// @Param name path int true "name"
+// @Param name path string true "name"
 // @Param user_id path int true "user_id"
-// @Param value path int true "value"
-// @Success 200 {object} Wallet
-// @Router /user [POST]
+// @Param value path number true "value"
+// @Success 200 {object} models.Wallet
+// @Router /wallet [POST]
 func (u *WalletController) CreateWallet(c *gin.Context) {
 
 	wallet := &models.Wallet{}
@@ -108,8 +106,9 @@ func (u *WalletController) CreateWallet(c *gin.Context) {
 
 // GetWallets godoc
 // @Summary Get all wallets
+// @id getWallets
 // @Produce  json
-// @Success 200 {object} Wallet
+// @Success 200 {object} models.Wallet
 // @Router /wallet [GET]
 func (u *WalletController) GetWallets(c *gin.Context) {
 
@@ -125,16 +124,13 @@ func (u *WalletController) GetWallets(c *gin.Context) {
 
 // UpdateWallet godoc
 // @Summary Update a wallet
-// @id get-int
-// @name get-string
-// @user_id get-int
-// @value get-string
+// @id updateWallet
 // @Produce  json
 // @Param id path int true "id"
-// @Param name path int true "name"
+// @Param name path string true "name"
 // @Param user_id path int true "user_id"
-// @Param value path int true "value"
-// @Success 200 {object} Wallet
+// @Param value path number true "value"
+// @Success 200 {object} models.Wallet
 // @Router /wallet [PUT]
 func (u *WalletController) UpdateWallet(c *gin.Context) {
 
@@ -175,10 +171,10 @@ func (u *WalletController) UpdateWallet(c *gin.Context) {
 
 // DeleteWallet godoc
 // @Summary Delete a wallet
-// @id get-int
+// @id deleteWallet
 // @Produce  json
 // @Param id path int true "id"
-// @Success 200 {object} Wallet
+// @Success 200 {object} models.Wallet
 // @Router /wallet [DELETE]
 func (u *WalletController) DeleteWallet(c *gin.Context) {
 

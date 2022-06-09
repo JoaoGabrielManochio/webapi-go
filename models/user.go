@@ -14,5 +14,5 @@ type User struct {
 	CPFCNPJ   string         `gorm:"column:cpf_cnpj;type:varchar(150);not null" json:"cpf_cnpj" validate:"required"`
 	CreatedAt time.Time      `gorm:"column:created_at;type:datetime;not null" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;type:datetime;not null" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;type:datetime" json:"deleted"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;type:datetime" json:"deleted_at"`
 }

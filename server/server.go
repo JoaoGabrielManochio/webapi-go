@@ -27,7 +27,7 @@ func NewServer() Server {
 }
 
 func (s *Server) Run() *gin.Engine {
-	// gin.SetMode("debug")
+	gin.SetMode("debug")
 
 	engine := gin.New()
 

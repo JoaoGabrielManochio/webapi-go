@@ -1,0 +1,352 @@
+basePath: http://localhost:8080/api/v1/
+definitions:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.Transaction:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      payer_id:
+        type: integer
+      payer_receive_id:
+        type: integer
+      updated_at:
+        type: string
+      value:
+        type: number
+    required:
+    - payer_id
+    - payer_receive_id
+    - value
+    type: object
+  models.User:
+    properties:
+      cpf_cnpj:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - cpf_cnpj
+    - email
+    - name
+    - password
+    type: object
+  models.Wallet:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+      value:
+        type: number
+    required:
+    - name
+    - user_id
+    - value
+    type: object
+info:
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: API em GO
+  version: 'openapi: 3.0.n'
+paths:
+  /transaction:
+    get:
+      operationId: getTransactions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+      summary: Show all transaction
+    post:
+      operationId: createTransaction
+      parameters:
+      - description: value
+        in: path
+        name: value
+        required: true
+        type: number
+      - description: payer_id
+        in: path
+        name: payer_id
+        required: true
+        type: integer
+      - description: payer_receive_id
+        in: path
+        name: payer_receive_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+      summary: Create a new transaction
+  /transaction/{{id}}:
+    get:
+      operationId: getTransaction
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+      summary: Show a transaction
+  /user:
+    delete:
+      operationId: deleteUser
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Delete user
+    get:
+      operationId: getUsers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Get all users
+    post:
+      operationId: createUser
+      parameters:
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: integer
+      - description: password
+        in: path
+        name: password
+        required: true
+        type: integer
+      - description: email
+        in: path
+        name: email
+        required: true
+        type: integer
+      - description: cpf_cnpj
+        in: path
+        name: cpf_cnpj
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Create a new user
+    put:
+      operationId: updateUser
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: password
+        in: path
+        name: password
+        required: true
+        type: string
+      - description: email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: cpf_cnpj
+        in: path
+        name: cpf_cnpj
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Update user
+  /user/{{id}}:
+    get:
+      operationId: getUSer
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Get a users
+  /wallet:
+    delete:
+      operationId: deleteWallet
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Wallet'
+      summary: Delete a wallet
+    get:
+      operationId: getWallets
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Wallet'
+      summary: Get all wallets
+    post:
+      operationId: createWallet
+      parameters:
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: value
+        in: path
+        name: value
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Wallet'
+      summary: Create a new wallet
+    put:
+      operationId: updateWallet
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: value
+        in: path
+        name: value
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Wallet'
+      summary: Update a wallet
+  /wallet/{{id}}:
+    get:
+      operationId: getWallet
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Wallet'
+      summary: Get a wallet
+swagger: "2.0"

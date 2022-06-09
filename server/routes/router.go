@@ -5,6 +5,8 @@ import (
 	"github.com/JoaoGabrielManochio/webapi-go/api/user"
 	"github.com/JoaoGabrielManochio/webapi-go/api/wallet"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func ConfigRoutes(router *gin.Engine) {
@@ -14,4 +16,6 @@ func ConfigRoutes(router *gin.Engine) {
 		wallet.Router(main.Group("wallet"))
 		transaction.Router(main.Group("transaction"))
 	}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }

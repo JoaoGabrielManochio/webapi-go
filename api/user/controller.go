@@ -31,10 +31,10 @@ func NewUserController(userBusiness IUserBusiness) IUserController {
 
 // GetUser godoc
 // @Summary Get a users
-// @id get-int
+// @id getUSer
 // @Produce  json
 // @Param id path int true "id"
-// @Success 200 {object} User
+// @Success 200 {object} models.User
 // @Router /user/{{id}} [GET]
 func (u *UserController) GetUser(c *gin.Context) {
 
@@ -64,16 +64,13 @@ func (u *UserController) GetUser(c *gin.Context) {
 
 // CreateUser godoc
 // @Summary Create a new user
-// @name get-string
-// @password get-string
-// @email get-string
-// @cpf_cnpj get-string
+// @id createUser
 // @Produce  json
 // @Param name path int true "name"
 // @Param password path int true "password"
 // @Param email path int true "email"
 // @Param cpf_cnpj path int true "cpf_cnpj"
-// @Success 200 {object} User
+// @Success 200 {object} models.User
 // @Router /user [POST]
 func (u *UserController) CreateUser(c *gin.Context) {
 
@@ -110,8 +107,9 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 // GetUsers godoc
 // @Summary Get all users
+// @id getUsers
 // @Produce  json
-// @Success 200 {object} User
+// @Success 200 {object} models.User
 // @Router /user [GET]
 func (u *UserController) GetUsers(c *gin.Context) {
 
@@ -127,18 +125,14 @@ func (u *UserController) GetUsers(c *gin.Context) {
 
 // UpdateUser godoc
 // @Summary Update user
-// @ID get-int
-// @name get-string
-// @password get-string base64
-// @email get-string
-// @cpf_cnpj get-string
+// @id updateUser
 // @Produce  json
 // @Param id path int true "ID"
-// @Param name path int true "name"
-// @Param password path int true "password"
-// @Param email path int true "email"
-// @Param cpf_cnpj path int true "cpf_cnpj"
-// @Success 200 {object} User
+// @Param name path string true "name"
+// @Param password path string true "password"
+// @Param email path string true "email"
+// @Param cpf_cnpj path string true "cpf_cnpj"
+// @Success 200 {object} models.User
 // @Router /user [PUT]
 func (u *UserController) UpdateUser(c *gin.Context) {
 
@@ -172,10 +166,10 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 
 // DeleteUser godoc
 // @Summary Delete user
-// @ID get-int
+// @ID deleteUser
 // @Produce  json
 // @Param id path int true "ID"
-// @Success 200 {object} User
+// @Success 200 {object} models.User
 // @Router /user [DELETE]
 func (u *UserController) DeleteUser(c *gin.Context) {
 
