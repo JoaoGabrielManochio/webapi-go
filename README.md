@@ -5,8 +5,8 @@ User
 Metodo addUser POST: http://localhost:8080/api/v1/user
 
 {
-	"name": "João Gabriel PJ",
-	"email": "joao1234@teste.com.br",
+	"name": "Teste PJ",
+	"email": "teste1234@teste.com.br",
 	"password": "MTIzNDU2",
 	"cpf_cnpj": "82.756.110/0001-42"
 }
@@ -19,8 +19,8 @@ Metodo updateUser PUT: http://localhost:8080/api/v1/user
 
 {
 	"id": 1,
-	"name": "João Gabriel TESTADO2",
-	"email": "joao@teste.com.br",
+	"name": "Teste TESTADO",
+	"email": "teste@teste.com.br",
 	"password": "NjU0MzIx",
 	"cpf_cnpj": "108.744.500-04"
 }
